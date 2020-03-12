@@ -1,0 +1,8 @@
+requirement:
+add binding of different domin to different site in IIS as bulk
+
+code:
+foreach($p in Import-Csv C:\Users\naincy.priya\Desktop\ACS.csv){New-WebBinding -Name $p.site -IPAddress “*” -Port 80 -protocol http -HostHeader $p.bind -sslflags 0}
+
+output: 
+Nothing
