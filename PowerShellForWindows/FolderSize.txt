@@ -1,0 +1,4 @@
+Requirement: list the size of folder MB
+
+Command:
+gci -Directory | %{write-host $_; ((Get-ChildItem $_ -Recurse | Measure-Object -Property Length -Sum -ErrorAction Stop).Sum / 1MB)}
