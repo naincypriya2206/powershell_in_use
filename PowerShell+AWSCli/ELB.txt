@@ -1,0 +1,33 @@
+Case1:
+Requirement: to update the ssl certificate on 443 listener on a group of ELBs
+
+code:
+foreach($elb in get-content g:\naincy\powershell\elblist.txt)
+{
+aws elb set-load-balancer-listener-ssl-certificate --load-balancer-name $elb --load-balancer-port 443 --ssl-certificate-id <give certificate arn>
+
+aws elb describe-load-balancers --load-balancer-name $elb --query 'LoadBalancerDescriptions[].{LoadBalancerName:LoadBalancerName,ListenerDescription:ListenerDescriptions[]}'
+}
+==========================================================================================================================================================
+
+
+case 2:
+requirement: a ec2 machine(instance id i-oldmachine) was curropted you created a new ec2 machine(instance id i-newmachine from previous ami. now you need to update the elbs and replace the previous ec2 machine with the new ec2 machine
+
+code:
+
+to list the elb that have the ec2 machine registered
+aws elb describe-load-balancers --query "LoadBalancerDescriptions[?Instances[?InstanceId=='i-oldmachine']].{name:LoadBalancerName}"
+
+
+to deregister the i-oldmachine and register the i-newmachine
+$i = aws elb describe-load-balancers --query "LoadBalancerDescriptions[?Instances[?InstanceId=='i-oldmachine']].{name:LoadBalancerName}"
+
+foreach ($p in $i)
+{
+write-host "working on" $p
+aws elb register-instances-with-load-balancer --load-balancer-name $p --instances i-newmachine
+aws hosting elb deregister-instances-from-load-balancer --load-balancer-name $p --instances i-oldmachine
+}
+
+===========================================================================================================================================================

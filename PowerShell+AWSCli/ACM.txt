@@ -1,0 +1,12 @@
+Case 1:
+Requirement: find the certificate in IAM for a given certificate ID.
+
+
+foreach($p in get-content C:\naincy\powershell\list.txt)
+{
+aws iam list-server-certificates --query 'ServerCertificateMetadataList[*].{ServerCertname:ServerCertificateName,ServerCert:ServerCertificateId,UploadDate:UploadDate,Expiration:Expiration}[?contains (ServrCert $p)]' --output text
+}
+
+========================================================================================================================================================================
+
+
